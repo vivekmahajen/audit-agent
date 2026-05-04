@@ -72,11 +72,21 @@ ALTER TABLE actions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
 
 -- RLS policies (users only see their own data)
-CREATE POLICY IF NOT EXISTS "Users see own profile" ON profiles FOR ALL USING (auth.uid() = id);
-CREATE POLICY IF NOT EXISTS "Users see own transactions" ON transactions FOR ALL USING (auth.uid() = user_id);
-CREATE POLICY IF NOT EXISTS "Users see own subscriptions" ON subscriptions FOR ALL USING (auth.uid() = user_id);
-CREATE POLICY IF NOT EXISTS "Users see own actions" ON actions FOR ALL USING (auth.uid() = user_id);
-CREATE POLICY IF NOT EXISTS "Users see own messages" ON messages FOR ALL USING (auth.uid() = user_id);
+DO $$ BEGIN
+  CREATE POLICY "Users see own profile" ON profiles FOR ALL USING (auth.uid() = id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  CREATE POLICY "Users see own transactions" ON transactions FOR ALL USING (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  CREATE POLICY "Users see own subscriptions" ON subscriptions FOR ALL USING (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  CREATE POLICY "Users see own actions" ON actions FOR ALL USING (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  CREATE POLICY "Users see own messages" ON messages FOR ALL USING (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 -- Function to auto-create profile on user signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
