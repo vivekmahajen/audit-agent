@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans, Arial, Helvetica, sans-serif);
+}
+
+/* Smooth scroll for chat */
+.overflow-y-auto {
+  scroll-behavior: smooth;
+}
+
+/* Prose styles for markdown in chat messages */
+.prose {
+  color: inherit;
+}
+
+.prose p {
+  margin: 0.25rem 0;
+}
+
+.prose ul {
+  padding-left: 1.25rem;
+  margin: 0.25rem 0;
+}
+
+.prose li {
+  margin: 0.125rem 0;
+}
+
+.prose strong {
+  font-weight: 600;
+  color: inherit;
+}
+
+.prose code {
+  font-size: 0.8em;
+}
+
+.prose h1, .prose h2, .prose h3 {
+  font-weight: 600;
+  margin: 0.5rem 0 0.25rem;
+  color: inherit;
+}
