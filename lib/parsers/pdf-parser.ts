@@ -28,9 +28,9 @@ function parseDateFromText(raw: string, currentYear?: number): string {
 }
 
 export async function parsePDF(buffer: Buffer): Promise<RawTransaction[]> {
-  // Use require for pdf-parse to avoid ESM/CJS issues
+  // Use the lib entry point directly to avoid pdf-parse loading test files on import
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const pdfParse = require('pdf-parse') as (buf: Buffer) => Promise<{ text: string }>;
+  const pdfParse = require('pdf-parse/lib/pdf-parse.js') as (buf: Buffer) => Promise<{ text: string }>;
   const data = await pdfParse(buffer);
   const text = data.text;
 
