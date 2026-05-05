@@ -15,21 +15,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         <nav className="flex items-center gap-1">
           <Link
-            href="/dashboard/chat"
+            href="/chat"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-100 transition-colors"
           >
             <MessageCircle className="w-3.5 h-3.5" />
             Chat
           </Link>
           <Link
-            href="/dashboard/savings"
+            href="/savings"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-100 transition-colors"
           >
             <TrendingDown className="w-3.5 h-3.5" />
             Savings
           </Link>
           <Link
-            href="/dashboard/settings"
+            href="/settings"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-100 transition-colors"
           >
             <Settings className="w-3.5 h-3.5" />
