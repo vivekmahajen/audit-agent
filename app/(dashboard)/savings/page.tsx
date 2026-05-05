@@ -78,7 +78,7 @@ export default async function SavingsPage() {
             Upload a bank statement in the chat to get started
           </p>
           <Link
-            href="/dashboard/chat"
+            href="/chat"
             className="inline-block mt-4 px-4 py-2 rounded-full bg-violet-600 text-white text-xs font-medium hover:bg-violet-700 transition-colors"
           >
             Go to chat
