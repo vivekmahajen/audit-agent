@@ -108,7 +108,7 @@ export default function UploadZone({ userId, onComplete }: UploadZoneProps) {
         <label className="cursor-pointer block">
           <input
             type="file"
-            accept=".csv"
+            accept=".csv,.pdf"
             className="sr-only"
             onChange={handleFileChange}
           />
@@ -121,7 +121,7 @@ export default function UploadZone({ userId, onComplete }: UploadZoneProps) {
                 Drop your bank statement here
               </p>
               <p className="text-xs text-gray-500 mt-1">
-                CSV · Chase, BoA, Wells Fargo, Capital One
+                CSV or PDF · Chase, BoA, Wells Fargo, Capital One
               </p>
             </div>
             <span className="text-xs px-3 py-1 rounded-full bg-violet-600 text-white font-medium">

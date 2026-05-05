@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase';
 import SavingsCard from '@/components/insights/SavingsCard';
-import SubscriptionList from '@/components/insights/SubscriptionList';
+import SubscriptionActions from '@/components/insights/SubscriptionActions';
 import Link from 'next/link';
 import type { Subscription } from '@/types';
 
@@ -9,6 +9,7 @@ export default async function SavingsPage() {
   let totalSaved = 0;
   let actionsCount = 0;
   let isAuthenticated = false;
+  let userName = '';
 
   try {
     const supabase = await createClient();
@@ -17,7 +18,7 @@ export default async function SavingsPage() {
     if (user) {
       isAuthenticated = true;
 
-      const [subsResult, actionsResult] = await Promise.all([
+      const [subsResult, actionsResult, profileResult] = await Promise.all([
         supabase
           .from('subscriptions')
           .select('*')
@@ -28,12 +29,18 @@ export default async function SavingsPage() {
           .from('actions')
           .select('amount_saved_monthly')
           .eq('user_id', user.id),
+        supabase
+          .from('profiles')
+          .select('name')
+          .eq('id', user.id)
+          .single(),
       ]);
 
       subscriptions = (subsResult.data as Subscription[]) ?? [];
       const actions = actionsResult.data ?? [];
       totalSaved = actions.reduce((sum, a) => sum + (a.amount_saved_monthly ?? 0), 0);
       actionsCount = actions.length;
+      userName = profileResult.data?.name ?? '';
     }
   } catch {
     // Not authenticated
@@ -69,7 +76,7 @@ export default async function SavingsPage() {
       )}
 
       {subscriptions.length > 0 ? (
-        <SubscriptionList subscriptions={subscriptions} />
+        <SubscriptionActions subscriptions={subscriptions} userName={userName} />
       ) : (
         <div className="text-center py-12">
           <p className="text-3xl mb-3">📂</p>
@@ -78,7 +85,7 @@ export default async function SavingsPage() {
             Upload a bank statement in the chat to get started
           </p>
           <Link
-            href="/dashboard/chat"
+            href="/chat"
             className="inline-block mt-4 px-4 py-2 rounded-full bg-violet-600 text-white text-xs font-medium hover:bg-violet-700 transition-colors"
           >
             Go to chat
