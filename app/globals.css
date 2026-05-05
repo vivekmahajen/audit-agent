@@ -10,6 +10,18 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-formiq-serif: var(--font-dm-serif), 'DM Serif Display', Georgia, serif;
+  --font-formiq-mono: var(--font-ibm-mono), 'IBM Plex Mono', 'Courier New', monospace;
+  --font-formiq-body: var(--font-inter), 'Inter', system-ui, sans-serif;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.35s ease-out both;
 }
 
 body {
