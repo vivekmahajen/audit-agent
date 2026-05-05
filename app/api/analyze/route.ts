@@ -1,7 +1,7 @@
 import { anthropic, HAIKU_MODEL } from '@/lib/claude';
 import { createClient } from '@/lib/supabase';
 import { buildClassifyPrompt } from '@/lib/prompts/classify-prompt';
-import type { ClassifiedTransaction } from '@/types';
+import type { ClassifiedTransaction, RawTransaction } from '@/types';
 
 export const runtime = 'nodejs';
 
@@ -29,7 +29,16 @@ export async function POST(req: Request) {
 
     try {
       const jsonText = rawText.replace(/```json?\n?/g, '').replace(/```\n?/g, '').trim();
-      classified = JSON.parse(jsonText);
+      const parsed = JSON.parse(jsonText);
+
+      // Merge Claude's classification with original transactions to restore amounts
+      const txnById = new Map<string, RawTransaction>(
+        transactions.map((t: RawTransaction) => [t.id, t])
+      );
+      classified = parsed.map((c: ClassifiedTransaction) => ({
+        ...txnById.get(c.id),
+        ...c,
+      }));
     } catch {
       return Response.json({ error: 'Failed to parse AI classification response' }, { status: 500 });
     }
