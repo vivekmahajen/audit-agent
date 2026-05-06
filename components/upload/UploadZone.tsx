@@ -48,7 +48,17 @@ export default function UploadZone({ userId, onComplete }: UploadZoneProps) {
         });
 
         const analyzeData = await analyzeRes.json();
-        if (!analyzeRes.ok) throw new Error(analyzeData.error ?? 'Analysis failed');
+        if (!analyzeRes.ok) {
+          if (analyzeData.code === 'AUTH_REQUIRED') {
+            window.location.href = '/login?intent=trial';
+            return;
+          }
+          if (analyzeData.code === 'TRIAL_EXPIRED') {
+            window.location.href = '/upgrade';
+            return;
+          }
+          throw new Error(analyzeData.error ?? 'Analysis failed');
+        }
 
         setStage('done');
 

@@ -2,13 +2,22 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { createBrowserSupabaseClient } from '@/lib/supabase-browser';
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const intent = searchParams.get('intent'); // 'trial' | 'pro' | 'business'
+  const redirectTo = searchParams.get('redirect') ?? '/chat';
+
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
+
+  const postLoginRedirect = `${typeof window !== 'undefined' ? window.location.origin : ''}${
+    intent === 'pro' || intent === 'business' ? '/settings' : redirectTo
+  }`;
 
   const handleMagicLink = async (e: React.FormEvent) => {
     const supabase = createBrowserSupabaseClient();
@@ -18,7 +27,7 @@ export default function LoginPage() {
 
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: `${window.location.origin}/chat` },
+      options: { emailRedirectTo: postLoginRedirect },
     });
 
     setLoading(false);
@@ -33,9 +42,24 @@ export default function LoginPage() {
     const supabase = createBrowserSupabaseClient();
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/chat` },
+      options: { redirectTo: postLoginRedirect },
     });
   };
+
+  const headingByIntent: Record<string, string> = {
+    trial: 'Create your free account',
+    pro: 'Sign up for Pro',
+    business: 'Sign up for Business',
+  };
+
+  const subheadingByIntent: Record<string, string> = {
+    trial: '10 audits/day free for 7 days — no credit card needed.',
+    pro: 'You\'ll complete payment after signing in.',
+    business: 'You\'ll complete payment after signing in.',
+  };
+
+  const heading = intent ? (headingByIntent[intent] ?? 'Welcome back') : 'Welcome back';
+  const subheading = intent ? (subheadingByIntent[intent] ?? 'Sign in to see your savings') : 'Sign in to see your savings';
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
@@ -47,8 +71,8 @@ export default function LoginPage() {
             </div>
             <span className="font-semibold text-gray-900">Arlo</span>
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
-          <p className="text-sm text-gray-500 mt-1">Sign in to see your savings</p>
+          <h1 className="text-2xl font-bold text-gray-900">{heading}</h1>
+          <p className="text-sm text-gray-500 mt-1">{subheading}</p>
         </div>
 
         <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
@@ -119,9 +143,9 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-xs text-gray-400 mt-4">
-          No account?{' '}
-          <Link href="/chat" className="text-violet-600 hover:underline">
-            Try for free first
+          Already have an account?{' '}
+          <Link href="/login" className="text-violet-600 hover:underline">
+            Sign in
           </Link>
         </p>
       </div>
